@@ -6,7 +6,12 @@
 //  Copyright (c) 2014 Chad Armstrong. All rights reserved.
 //
 
+#import <Dropbox/Dropbox.h>
+
 #import "AppDelegate.h"
+
+#define kAppKey     @"644s1rwkdcplj7c"
+#define kAppSecret  @"l3wrvi1m65b98oc"
 
 @interface AppDelegate ()
 
@@ -17,6 +22,9 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    DBAccountManager *accountManager = [[DBAccountManager alloc] initWithAppKey:kAppKey secret:kAppSecret];
+    [DBAccountManager setSharedManager:accountManager];
+    
     return YES;
 }
 
