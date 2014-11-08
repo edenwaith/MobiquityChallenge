@@ -11,7 +11,6 @@
 
 @interface PhotoViewController : UIViewController
 
-@property (nonatomic, weak) IBOutlet UIImageView *imageView;
 @property (nonatomic, strong) DBFile *imageFile;
 
 @end

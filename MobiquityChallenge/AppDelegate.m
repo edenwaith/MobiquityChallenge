@@ -11,11 +11,7 @@
 
 #import "AppDelegate.h"
 #import "ListFilesTableViewController.h"
-
-#define kAppKey     @"366ikk00vtfgu04"
-#define kAppSecret  @"6h5ud1cx01k81zy"
-
-static NSString * const kListFilesTableViewID = @"ListFilesTableViewID";
+#import "MobiquityConstants.h"
 
 @interface AppDelegate ()
 

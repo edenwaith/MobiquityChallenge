@@ -11,9 +11,6 @@
 
 @interface ListFilesTableViewController : UITableViewController
 
-@property (nonatomic, strong) NSMutableArray *filesArray;
-
-- (id)initWithFilesystem:(DBFilesystem *)filesystem root:(DBPath *)root;
 - (void)setFilesystem:(DBFilesystem *)filesystem andRootPath:(DBPath *)rootPath;
 
 @end

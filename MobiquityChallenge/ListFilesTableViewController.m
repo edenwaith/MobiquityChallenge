@@ -8,11 +8,11 @@
 
 #import "ListFilesTableViewController.h"
 #import "PhotoViewController.h"
-
-static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
+#import "MobiquityConstants.h"
 
 @interface ListFilesTableViewController () <UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
+@property (nonatomic, strong) NSMutableArray *filesArray;
 @property (nonatomic, strong) DBFilesystem *filesystem;
 @property (nonatomic, strong) DBPath *rootPath;
 
@@ -25,7 +25,7 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
     
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = YES;
-    self.navigationItem.title = @"Mobiquity";
+    self.navigationItem.title = NSLocalizedString(@"Mobiquity", nil);
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -35,17 +35,6 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 }
 
 #pragma mark - Custom Class Methods
-
-- (id)initWithFilesystem:(DBFilesystem *)filesystem root:(DBPath *)root {
-    
-    if ((self = [super init])) {
-        self.filesystem = filesystem;
-        self.rootPath = root;
-        self.navigationItem.title = [root isEqual:[DBPath root]] ? @"Dropbox" : [root name];
-    }
-    
-    return self;
-}
 
 - (NSMutableArray *)filesArray {
     // Initialize the array, if necessary
@@ -67,25 +56,8 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
     [self loadFiles];
 }
 
-//NSInteger sortFileInfos(id obj1, id obj2, void *ctx) {
-//    return [[obj1 path] compare:[obj2 path]];
-//}
-
 - (void)loadFiles {
-//    if (_loadingFiles) return;
-//    _loadingFiles = YES;
-//    
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), ^() {
-//        NSArray *immContents = [_filesystem listFolder:_root error:nil];
-//        NSMutableArray *mContents = [NSMutableArray arrayWithArray:immContents];
-//        [mContents sortUsingFunction:sortFileInfos context:NULL];
-//        dispatch_async(dispatch_get_main_queue(), ^() {
-//            self.contents = mContents;
-//            _loadingFiles = NO;
-//            [self reload];
-//        });
-//    });
-    
+	
     DBError *err = nil;
 	
 	if (self.filesArray != nil && [self.filesArray count] > 0) {
@@ -102,6 +74,9 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
     
 }
 
+/**
+ *  Update the interface and reload the table data
+ */
 - (void)reload {
 	
 	if ([self accountIsLinked] == YES) {
@@ -125,27 +100,24 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 	[alert show];
 }
 
-#pragma mark -
+#pragma mark - UIActionSheet Methods
 
 - (IBAction)addNewItem:(id)sender {
 	
 	UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
 															 delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel", nil)
 											   destructiveButtonTitle:nil
-													otherButtonTitles:NSLocalizedString(@"Add New Photo", nil), NSLocalizedString(@"Add Existing Photo", nil), NSLocalizedString(@"Add Note", nil), nil];
+													otherButtonTitles:NSLocalizedString(@"Add New Photo", nil), NSLocalizedString(@"Add Existing Photo", nil), nil];
 	[actionSheet showInView:self.view];
 }
 
 - (void)actionSheet:(UIActionSheet *)actionSheet didDismissWithButtonIndex:(NSInteger)buttonIndex {
-	NSLog(@"buttonIndex: %ld", (long)buttonIndex);
 	
 	if (buttonIndex != actionSheet.cancelButtonIndex) {
 		if (buttonIndex == 0) { // Add New Photo
 			[self addNewPhoto];
 		} else if (buttonIndex == 1) { // Add Existing Photo
 			[self addExistingPhoto];
-		} else if (buttonIndex == 2) { // Add Note
-			[self addNewNote];
 		}
 	}
 }
@@ -153,15 +125,10 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 #pragma mark - Add New Item Methods
 
 - (void)addNewPhoto {
+	
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera] == NO) {
 		
-		UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Sorry", nil)
-															  message:NSLocalizedString(@"This device doesn't have a camera.", nil)
-															 delegate:nil
-													cancelButtonTitle:NSLocalizedString(@"OK", nil)
-													otherButtonTitles: nil];
-		
-		[alert show];
+		[self displayAlertWithTitle:NSLocalizedString(@"Sorry", nil) andError:NSLocalizedString(@"This device doesn't have a camera.", nil)];
 		
 	} else {
 		
@@ -187,10 +154,6 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 	
 }
 
-- (void)addNewNote {
-	
-}
-
 #pragma mark - UIImagePickerControllerDelegate Methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info {
@@ -213,9 +176,9 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 		}
 	}
 	
-	[picker dismissViewControllerAnimated:YES completion:nil];
-	
 	[self loadFiles];
+	
+	[picker dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
@@ -276,6 +239,7 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 					cell.imageView.image = [UIImage imageWithData:imageData];
 				}
 			}
+			
 		} else {
 			cell.imageView.image = [UIImage imageNamed:[fileInfo iconName]];
 		}
@@ -293,6 +257,7 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 		}
 		
         cell.textLabel.textAlignment = NSTextAlignmentCenter;
+		cell.imageView.image = nil;
         
         if ([self accountIsLinked] == NO) {
             cell.textLabel.text = NSLocalizedString(@"Link to Dropbox", nil);
@@ -308,40 +273,30 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 
 #pragma mark - Table view delegate
 
-// In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([self.filesArray count] > 0 && indexPath.section == 0) {
+		
 		DBFileInfo *fileInfo = [self.filesArray objectAtIndex:indexPath.row];
 		DBError *error = nil;
 		DBFile *file = [self.filesystem openFile:fileInfo.path error:&error];
 		
-		if (file != nil && error == noErr) {
-			error = nil;
+		if ( (file != nil) && (error == noErr)) {
 			
-			NSData *imageData = [file readData:&error];
+			UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
 			
-			if (imageData != nil && error == noErr) {
-				
-				UIImage *image = [UIImage imageWithData:imageData];
-				UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-				
-				PhotoViewController *photoController = [storyboard instantiateViewControllerWithIdentifier:kPhotoViewControllerID];
-//				photoController.title = fileInfo.path.name;
-//				photoController.imageView.image = image;
-				photoController.imageFile = file;
-				
-				[self.navigationController pushViewController:photoController animated:YES];
-				
-			} else {
-				[self displayAlertWithTitle:NSLocalizedString(@"Error opening file", nil) andError:[error localizedDescription]];
-			}
+			PhotoViewController *photoController = [storyboard instantiateViewControllerWithIdentifier:kPhotoViewControllerID];
+			photoController.imageFile = file;
+			
+			[self.navigationController pushViewController:photoController animated:YES];
+
 		} else {
 
 			[self displayAlertWithTitle:NSLocalizedString(@"Error opening file", nil) andError:[error localizedDescription]];
 		}
 		
     } else {
+		
         if ([self accountIsLinked] == NO) { // Link to Dropbox
 			[[DBAccountManager sharedManager] linkFromController:self.navigationController];
 		} else { // Unlink from Dropbox
@@ -353,7 +308,8 @@ static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	if ([self.filesArray count] > 0 && indexPath.section == 0) {
+	
+	if ( ([self.filesArray count] > 0) && (indexPath.section == 0) ) {
 		return 64.0f;
 	} else {
 		return 44.0f;
