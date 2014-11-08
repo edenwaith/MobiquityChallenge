@@ -6,14 +6,21 @@
 //  Copyright (c) 2014 Chad Armstrong. All rights reserved.
 //
 
+#import "TargetConditionals.h"
 #import <Dropbox/Dropbox.h>
 
 #import "AppDelegate.h"
+#import "ListFilesTableViewController.h"
 
-#define kAppKey     @"644s1rwkdcplj7c"
-#define kAppSecret  @"l3wrvi1m65b98oc"
+#define kAppKey     @"366ikk00vtfgu04"
+#define kAppSecret  @"6h5ud1cx01k81zy"
+
+static NSString * const kListFilesTableViewID = @"ListFilesTableViewID";
 
 @interface AppDelegate ()
+
+@property (nonatomic, strong) UINavigationController *rootController;
+@property (nonatomic, strong) ListFilesTableViewController *listFilesController;
 
 @end
 
@@ -24,6 +31,38 @@
     // Override point for customization after application launch.
     DBAccountManager *accountManager = [[DBAccountManager alloc] initWithAppKey:kAppKey secret:kAppSecret];
     [DBAccountManager setSharedManager:accountManager];
+    
+    DBAccount *account = [accountManager.linkedAccounts objectAtIndex:0];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+	
+	UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+	self.listFilesController = [mainStoryboard instantiateViewControllerWithIdentifier:kListFilesTableViewID];
+    
+    if (account != nil) {
+        DBFilesystem *filesystem = [[DBFilesystem alloc] initWithAccount:account];
+        [self.listFilesController setFilesystem:filesystem andRootPath:[DBPath root]];
+    }
+    
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self.listFilesController];
+    
+    self.rootController = navigationController;
+    
+    self.window.rootViewController = navigationController;
+    self.window.backgroundColor = [UIColor whiteColor];
+    [self.window makeKeyAndVisible];
+	
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    
+    DBAccount *account = [[DBAccountManager sharedManager] handleOpenURL:url];
+    
+    if (account != nil) {
+        
+        DBFilesystem *filesystem = [[DBFilesystem alloc] initWithAccount:account];
+        [self.listFilesController setFilesystem:filesystem andRootPath:[DBPath root]];
+    }
     
     return YES;
 }
