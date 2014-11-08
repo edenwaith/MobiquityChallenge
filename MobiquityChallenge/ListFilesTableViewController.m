@@ -7,8 +7,9 @@
 //
 
 #import "ListFilesTableViewController.h"
+#import "PhotoViewController.h"
 
-
+static NSString * const kPhotoViewControllerID = @"PhotoViewControllerID";
 
 @interface ListFilesTableViewController () <UIActionSheetDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 
@@ -111,6 +112,17 @@
 	}
 	
 	[self.tableView reloadData];
+}
+
+- (void)displayAlertWithTitle:(NSString *)title andError:(NSString *)errorMessage {
+	
+	UIAlertView *alert = [[UIAlertView alloc] initWithTitle:title
+													message:errorMessage
+												   delegate:nil
+										  cancelButtonTitle:NSLocalizedString(@"OK", nil)
+										  otherButtonTitles: nil];
+	
+	[alert show];
 }
 
 #pragma mark -
@@ -247,7 +259,7 @@
 			cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
 		}
 		
-        DBFileInfo *fileInfo = [self.filesArray objectAtIndex:indexPath.row];
+		DBFileInfo *fileInfo = [self.filesArray objectAtIndex:indexPath.row];
         cell.textLabel.text = fileInfo.path.name;
 		cell.textLabel.textAlignment = NSTextAlignmentLeft;
 		
@@ -300,7 +312,35 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if ([self.filesArray count] > 0 && indexPath.section == 0) {
-        
+		DBFileInfo *fileInfo = [self.filesArray objectAtIndex:indexPath.row];
+		DBError *error = nil;
+		DBFile *file = [self.filesystem openFile:fileInfo.path error:&error];
+		
+		if (file != nil && error == noErr) {
+			error = nil;
+			
+			NSData *imageData = [file readData:&error];
+			
+			if (imageData != nil && error == noErr) {
+				
+				UIImage *image = [UIImage imageWithData:imageData];
+				UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+				
+				PhotoViewController *photoController = [storyboard instantiateViewControllerWithIdentifier:kPhotoViewControllerID];
+//				photoController.title = fileInfo.path.name;
+//				photoController.imageView.image = image;
+				photoController.imageFile = file;
+				
+				[self.navigationController pushViewController:photoController animated:YES];
+				
+			} else {
+				[self displayAlertWithTitle:NSLocalizedString(@"Error opening file", nil) andError:[error localizedDescription]];
+			}
+		} else {
+
+			[self displayAlertWithTitle:NSLocalizedString(@"Error opening file", nil) andError:[error localizedDescription]];
+		}
+		
     } else {
         if ([self accountIsLinked] == NO) { // Link to Dropbox
 			[[DBAccountManager sharedManager] linkFromController:self.navigationController];

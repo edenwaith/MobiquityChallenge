@@ -76,6 +76,7 @@
 		3D1039B01A0E91C90002795C /* powerpoint48.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3D10396B1A0E91C90002795C /* powerpoint48.gif */; };
 		3D1039B11A0E91C90002795C /* word48.gif in Resources */ = {isa = PBXBuildFile; fileRef = 3D10396C1A0E91C90002795C /* word48.gif */; };
 		3D1039B21A0E91C90002795C /* README in Resources */ = {isa = PBXBuildFile; fileRef = 3D10396D1A0E91C90002795C /* README */; };
+		3D1039B51A0E970D0002795C /* PhotoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D1039B41A0E970D0002795C /* PhotoViewController.m */; };
 		3D53720E1A0D2D8600E1DE96 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D53720D1A0D2D8600E1DE96 /* main.m */; };
 		3D5372111A0D2D8600E1DE96 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D5372101A0D2D8600E1DE96 /* AppDelegate.m */; };
 		3D5372141A0D2D8600E1DE96 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D5372131A0D2D8600E1DE96 /* ViewController.m */; };
@@ -177,6 +178,8 @@
 		3D10396B1A0E91C90002795C /* powerpoint48.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = powerpoint48.gif; sourceTree = "<group>"; };
 		3D10396C1A0E91C90002795C /* word48.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = word48.gif; sourceTree = "<group>"; };
 		3D10396D1A0E91C90002795C /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
+		3D1039B31A0E970D0002795C /* PhotoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhotoViewController.h; sourceTree = "<group>"; };
+		3D1039B41A0E970D0002795C /* PhotoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhotoViewController.m; sourceTree = "<group>"; };
 		3D5372081A0D2D8600E1DE96 /* MobiquityChallenge.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MobiquityChallenge.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D53720C1A0D2D8600E1DE96 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3D53720D1A0D2D8600E1DE96 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -402,6 +405,8 @@
 				3D5372401A0D6CB300E1DE96 /* ListFilesTableViewController.h */,
 				3D5372411A0D6CB300E1DE96 /* ListFilesTableViewController.m */,
 				3D5372421A0D6CB300E1DE96 /* ListFilesTableViewController.xib */,
+				3D1039B31A0E970D0002795C /* PhotoViewController.h */,
+				3D1039B41A0E970D0002795C /* PhotoViewController.m */,
 			);
 			name = Source;
 			sourceTree = "<group>";
@@ -581,6 +586,7 @@
 				3D5372111A0D2D8600E1DE96 /* AppDelegate.m in Sources */,
 				3D53720E1A0D2D8600E1DE96 /* main.m in Sources */,
 				3D5372431A0D6CB400E1DE96 /* ListFilesTableViewController.m in Sources */,
+				3D1039B51A0E970D0002795C /* PhotoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

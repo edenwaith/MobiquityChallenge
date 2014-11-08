@@ -3,6 +3,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6244"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
     <scenes>
         <!--Root View Controller-->
@@ -45,6 +46,37 @@
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UA9-50-zzd" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
+        <!--Photo View Controller-->
+        <scene sceneID="ih6-2k-Pz3">
+            <objects>
+                <viewController storyboardIdentifier="PhotoViewControllerID" id="ydd-ix-wKI" customClass="PhotoViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="lM6-mD-hEF"/>
+                        <viewControllerLayoutGuide type="bottom" id="wS3-LN-KyN"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="kPc-2N-Pif">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="3VF-9x-3Bw">
+                                <rect key="frame" x="0.0" y="-32" width="600" height="600"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="wS3-LN-KyN" firstAttribute="top" secondItem="3VF-9x-3Bw" secondAttribute="bottom" constant="32" id="9Ya-fH-SzG"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="3VF-9x-3Bw" secondAttribute="trailing" constant="-16" id="I4S-Zz-oyM"/>
+                            <constraint firstItem="3VF-9x-3Bw" firstAttribute="top" secondItem="lM6-mD-hEF" secondAttribute="bottom" constant="-52" id="Q2E-A6-cLM"/>
+                            <constraint firstItem="3VF-9x-3Bw" firstAttribute="leading" secondItem="kPc-2N-Pif" secondAttribute="leadingMargin" constant="-16" id="Xk8-9w-Rhz"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="imageView" destination="3VF-9x-3Bw" id="jvV-ln-ftx"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="PbL-Rh-Pio" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
         </scene>
     </scenes>
